@@ -1,130 +1,122 @@
 import Icon from '@/components/ui/icon';
 
-interface HeroSectionProps {
-  onNavigate: (section: string) => void;
-}
-
-const stats = [
-  { value: '12', label: 'Модулей', icon: 'BookOpen' },
-  { value: '48', label: 'Уроков', icon: 'Play' },
-  { value: '320', label: 'Участников', icon: 'Users' },
-  { value: '94%', label: 'Завершают курс', icon: 'TrendingUp' },
+const CAROUSEL = [
+  { icon: 'MessageCircle', label: 'Аккаунт в соцсетях', color: 'var(--terra)', bg: 'var(--terra-pale)', section: 'online' },
+  { icon: 'Video',         label: 'Видеозвонки',         color: 'var(--sage)',  bg: 'var(--sage-pale)',  section: 'online' },
+  { icon: 'ShoppingCart',  label: 'Заказ продуктов',     color: 'var(--gold)',  bg: 'var(--gold-pale)',  section: 'instructions' },
+  { icon: 'Users',         label: 'Клубы по интересам',  color: 'var(--terra)', bg: 'var(--terra-pale)', section: 'activities' },
+  { icon: 'Map',           label: 'Виртуальные экскурсии', color: 'var(--sage)', bg: 'var(--sage-pale)', section: 'activities' },
+  { icon: 'FileText',      label: 'Госуслуги',           color: 'var(--gold)',  bg: 'var(--gold-pale)',  section: 'instructions' },
 ];
 
-export default function HeroSection({ onNavigate }: HeroSectionProps) {
+const STATS = [
+  { num: '6', label: 'разделов пособия', icon: 'BookOpen' },
+  { num: '20+', label: 'пошаговых инструкций', icon: 'CheckSquare' },
+  { num: 'Аа', label: 'Простой режим', icon: 'Eye' },
+  { num: 'PDF', label: 'Памятки для печати', icon: 'Download' },
+];
+
+interface Props { onNav: (s: string) => void; }
+
+export default function HeroSection({ onNav }: Props) {
   return (
-    <section className="relative min-h-screen flex flex-col justify-center overflow-hidden px-6 py-20">
-      {/* Background orbs */}
-      <div className="orb orb-green" style={{ top: '10%', left: '-5%', opacity: 0.8 }} />
-      <div className="orb orb-purple" style={{ bottom: '20%', right: '5%', opacity: 0.9 }} />
-      <div className="orb orb-green" style={{ top: '60%', left: '50%', opacity: 0.4, width: '200px', height: '200px' }} />
+    <section id="hero" aria-labelledby="hero-h1" style={{ background: 'var(--cream)', paddingBottom: 0 }}>
 
-      {/* Grid pattern */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          backgroundImage: `linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)`,
-          backgroundSize: '60px 60px',
-        }}
-      />
+      {/* ── Hero block ── */}
+      <div style={{ maxWidth: 1160, margin: '0 auto', padding: '64px 24px 48px' }}>
+        <div className="hero-grid" style={{ display: 'grid', gridTemplateColumns: '1.05fr 0.95fr', gap: 52, alignItems: 'center' }}>
 
-      <div className="relative z-10 max-w-6xl mx-auto w-full">
-        {/* Badge */}
-        <div className="animate-slide-up delay-100 opacity-0 inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-full border border-[rgba(0,255,179,0.3)] bg-[rgba(0,255,179,0.05)]">
-          <span className="w-2 h-2 rounded-full bg-[#00ffb3] animate-glow-pulse" />
-          <span className="text-sm font-golos text-[#00ffb3] font-medium tracking-wide">Новый сезон открыт</span>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          {/* LEFT */}
           <div>
-            {/* Heading */}
-            <h1 className="font-oswald text-6xl lg:text-8xl font-bold leading-none mb-6 animate-slide-up delay-200 opacity-0">
-              <span className="text-white">УЧИСЬ</span>
-              <br />
-              <span className="gradient-text">БЫСТРЕЕ.</span>
-              <br />
-              <span className="text-white">ЛУЧШЕ.</span>
+            <div className="badge badge-terra rise d1" style={{ marginBottom: 20 }}>
+              <Icon name="Heart" size={12} />Для пожилых и их близких
+            </div>
+
+            <h1 id="hero-h1" className="rise d2"
+              style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(30px, 4.5vw, 54px)', fontWeight: 800, color: 'var(--ink)', lineHeight: 1.15, marginBottom: 22 }}>
+              Вместе активны:<br />
+              <span style={{ color: 'var(--terra)' }}>социализация пожилых</span><br />
+              <span style={{ color: 'var(--ink)' }}>в цифровом мире</span>
             </h1>
 
-            <p className="font-golos text-lg text-white/60 leading-relaxed mb-10 max-w-lg animate-slide-up delay-300 opacity-0">
-              Интерактивные модули с чек-листами, мини-тесты после каждой темы и возможность скачать прогресс в PDF — всё в одном месте.
+            <p className="rise d3" style={{ fontSize: 18, color: 'var(--ink-soft)', lineHeight: 1.75, marginBottom: 36, maxWidth: 490 }}>
+              Простые шаги к общению, новым знакомствам и активной жизни онлайн.
+              Пособие создано специально для тех, кто только начинает, — без лишних слов.
             </p>
 
-            {/* CTA Buttons */}
-            <div className="flex flex-wrap gap-4 animate-slide-up delay-400 opacity-0">
-              <button
-                onClick={() => onNavigate('modules')}
-                className="group relative px-8 py-4 rounded-xl font-golos font-semibold text-[#0a0c12] bg-[#00ffb3] hover:bg-[#00e6a1] transition-all duration-300 neon-glow hover:scale-105"
-              >
-                <span className="relative z-10 flex items-center gap-2">
-                  Начать обучение
-                  <Icon name="ArrowRight" size={18} className="group-hover:translate-x-1 transition-transform" />
-                </span>
+            <div className="rise d4" style={{ display: 'flex', flexWrap: 'wrap', gap: 14, marginBottom: 44 }}>
+              <button className="btn-main" onClick={() => onNav('online')}>
+                <Icon name="Smartphone" size={19} />Начать знакомство
               </button>
-              <button
-                onClick={() => onNavigate('resources')}
-                className="px-8 py-4 rounded-xl font-golos font-semibold text-white border border-white/15 hover:border-white/30 hover:bg-white/5 transition-all duration-300"
-              >
-                Ресурсы
+              <button className="btn-outline" onClick={() => onNav('activities')}>
+                <Icon name="Users" size={19} />Идеи для общения
               </button>
+              <button className="btn-ghost" onClick={() => onNav('resources')} style={{ border: '1.5px solid var(--line)' }}>
+                <Icon name="Download" size={16} />Полезные инструменты
+              </button>
+            </div>
+
+            {/* Stats row */}
+            <div className="rise d5" style={{ display: 'flex', flexWrap: 'wrap', gap: 20 }}>
+              {STATS.map(s => (
+                <div key={s.label} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <div className="icon-wrap icon-wrap-terra" style={{ width: 36, height: 36 }}>
+                    <Icon name={s.icon} fallback="Circle" size={16} style={{ color: 'var(--terra)' }} />
+                  </div>
+                  <div>
+                    <div style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: 17, color: 'var(--ink)', lineHeight: 1 }}>{s.num}</div>
+                    <div style={{ fontSize: 12, color: 'var(--ink-muted)', lineHeight: 1.2 }}>{s.label}</div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Floating card */}
-          <div className="hidden lg:block relative animate-slide-up delay-500 opacity-0">
-            <div className="animate-float">
-              <div className="glass-card rounded-2xl p-6 neon-glow-purple max-w-sm ml-auto">
-                <div className="flex items-center gap-3 mb-5">
-                  <div className="w-10 h-10 rounded-xl bg-[rgba(168,85,247,0.2)] flex items-center justify-center">
-                    <Icon name="Zap" size={20} className="text-[#a855f7]" />
-                  </div>
-                  <div>
-                    <p className="font-golos font-semibold text-white text-sm">Текущий модуль</p>
-                    <p className="font-golos text-white/40 text-xs">Урок 3 из 8</p>
-                  </div>
-                  <span className="ml-auto text-[#00ffb3] font-oswald font-bold text-lg">38%</span>
-                </div>
-                <div className="progress-bar mb-5">
-                  <div className="progress-fill" style={{ width: '38%' }} />
-                </div>
-                <div className="space-y-3">
-                  {['Введение в тему', 'Основные концепции', 'Практика'].map((item, i) => (
-                    <div key={item} className="flex items-center gap-3">
-                      <div className={`custom-check ${i < 2 ? 'checked' : ''}`}>
-                        {i < 2 && <Icon name="Check" size={12} className="text-[#0a0c12]" />}
-                      </div>
-                      <span className={`font-golos text-sm ${i < 2 ? 'text-white/60 line-through' : 'text-white'}`}>{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+          {/* RIGHT — illustration */}
+          <div className="hide-mobile rise d3" style={{ position: 'relative' }}>
+            <div style={{ borderRadius: 28, overflow: 'hidden', boxShadow: '0 20px 64px rgba(28,22,15,0.13)', border: '1px solid var(--line)' }}>
+              <img
+                src="https://cdn.poehali.dev/projects/dab19ba1-96ba-4b86-8c36-7d038e3df605/files/59fafb83-be25-43ab-854a-a6e63a847137.jpg"
+                alt="Пожилые люди общаются онлайн"
+                style={{ width: '100%', aspectRatio: '1/1', objectFit: 'cover', display: 'block' }}
+              />
             </div>
-
-            {/* Second mini card */}
-            <div className="glass-card rounded-xl p-4 absolute -bottom-6 -left-4 max-w-48 animate-float" style={{ animationDelay: '1s' }}>
-              <div className="flex items-center gap-2 mb-1">
-                <Icon name="Trophy" size={14} className="text-[#00ffb3]" />
-                <span className="font-golos text-xs font-semibold text-white">Тест пройден!</span>
+            <div style={{ position: 'absolute', bottom: -18, left: -20, background: '#fff', borderRadius: 18, padding: '14px 20px', boxShadow: '0 8px 32px rgba(28,22,15,0.12)', border: '1px solid var(--line)', display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div className="icon-wrap icon-wrap-sage" style={{ width: 44, height: 44 }}>
+                <Icon name="MessageCircle" size={22} style={{ color: 'var(--sage)' }} />
               </div>
-              <p className="font-oswald text-2xl font-bold text-[#00ffb3]">9/10</p>
-              <p className="font-golos text-xs text-white/40">правильных ответов</p>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 800, color: 'var(--ink)' }}>Новые друзья онлайн!</div>
+                <div style={{ fontSize: 12, color: 'var(--ink-muted)' }}>Книжный клуб → 8 участников</div>
+              </div>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-20 animate-slide-up delay-500 opacity-0">
-          {stats.map((stat) => (
-            <div key={stat.label} className="glass-card rounded-xl p-5 text-center group cursor-default">
-              <div className="flex justify-center mb-3">
-                <div className="w-10 h-10 rounded-lg bg-[rgba(0,255,179,0.1)] flex items-center justify-center group-hover:bg-[rgba(0,255,179,0.2)] transition-colors">
-                  <Icon name={stat.icon} fallback="Star" size={18} className="text-[#00ffb3]" />
+      {/* ── Карусель тем ── */}
+      <div style={{ background: 'var(--cream-dark)', borderTop: '1px solid var(--line)', borderBottom: '1px solid var(--line)', padding: '28px 0' }}>
+        <div style={{ maxWidth: 1160, margin: '0 auto', padding: '0 24px' }}>
+          <p style={{ fontSize: 12, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.10em', color: 'var(--ink-muted)', marginBottom: 18 }}>
+            Темы пособия
+          </p>
+          <div style={{ display: 'flex', gap: 14, overflowX: 'auto', paddingBottom: 6 }} role="list" aria-label="Темы пособия">
+            {CAROUSEL.map((c, i) => (
+              <button
+                key={i} role="listitem"
+                onClick={() => onNav(c.section)}
+                aria-label={c.label}
+                style={{ flexShrink: 0, padding: '18px 20px', borderRadius: 18, background: c.bg, border: `1px solid ${c.color}22`, cursor: 'pointer', textAlign: 'left', minWidth: 160, transition: 'all 0.2s' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-3px)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 22px rgba(28,22,15,0.1)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ''; (e.currentTarget as HTMLElement).style.boxShadow = ''; }}
+              >
+                <div className="icon-wrap" style={{ width: 40, height: 40, background: '#fff', marginBottom: 10, boxShadow: '0 2px 8px rgba(28,22,15,0.07)' }}>
+                  <Icon name={c.icon} fallback="Star" size={20} style={{ color: c.color }} />
                 </div>
-              </div>
-              <p className="font-oswald text-3xl font-bold text-white mb-1">{stat.value}</p>
-              <p className="font-golos text-sm text-white/40">{stat.label}</p>
-            </div>
-          ))}
+                <div style={{ fontWeight: 700, fontSize: 14, color: 'var(--ink)', lineHeight: 1.3 }}>{c.label}</div>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </section>

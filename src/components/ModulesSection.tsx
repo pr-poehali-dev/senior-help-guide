@@ -1,320 +1,196 @@
 import { useState } from 'react';
 import Icon from '@/components/ui/icon';
 
-interface CheckItem {
-  id: number;
-  text: string;
-  done: boolean;
+/* ──────────────────────────────────────
+   Раздел «Основы общения онлайн»
+────────────────────────────────────── */
+
+interface Block {
+  type: 'text' | 'tip' | 'steps' | 'grid' | 'glossary';
+  text?: string;
+  steps?: string[];
+  items?: { icon: string; label: string; desc: string }[];
+  terms?: { word: string; def: string }[];
 }
 
-interface QuizQuestion {
-  question: string;
-  options: string[];
-  correct: number;
+interface Topic {
+  id: string; icon: string; title: string; badge: string; bClass: string;
+  content: Block[];
 }
 
-interface Module {
-  id: number;
-  title: string;
-  subtitle: string;
-  icon: string;
-  color: string;
-  lessons: number;
-  duration: string;
-  checklist: CheckItem[];
-  quiz: QuizQuestion[];
-  progress: number;
-}
-
-const modulesData: Module[] = [
+const TOPICS: Topic[] = [
   {
-    id: 1,
-    title: 'Основы продукта',
-    subtitle: 'Фундаментальные принципы',
-    icon: 'Layers',
-    color: '#00ffb3',
-    lessons: 6,
-    duration: '2ч 30м',
-    progress: 75,
-    checklist: [
-      { id: 1, text: 'Прочитать введение', done: true },
-      { id: 2, text: 'Изучить ключевые термины', done: true },
-      { id: 3, text: 'Просмотреть примеры', done: true },
-      { id: 4, text: 'Выполнить практику', done: false },
-      { id: 5, text: 'Сдать итоговый тест', done: false },
-    ],
-    quiz: [
-      { question: 'Что является основой продуктового мышления?', options: ['Технические навыки', 'Понимание пользователя', 'Маркетинг', 'Финансы'], correct: 1 },
-      { question: 'Какой метод используется для приоритизации задач?', options: ['SWOT', 'RICE', 'PEST', 'SMART'], correct: 1 },
+    id: 'social',
+    icon: 'UserPlus',
+    title: 'Как завести аккаунт в соцсетях',
+    badge: 'Первый шаг',
+    bClass: 'badge-terra',
+    content: [
+      { type: 'text', text: 'Социальная сеть — это сайт или приложение, где люди общаются, делятся фотографиями и находят друзей с похожими интересами. Самые популярные в России: ВКонтакте и Одноклассники.' },
+      { type: 'tip', text: '💡 Начните с Одноклассников — он создан для людей старшего возраста и очень удобен.' },
+      { type: 'steps', steps: [
+        'Откройте браузер и наберите «ok.ru»',
+        'Нажмите кнопку «Зарегистрироваться»',
+        'Введите имя, фамилию и дату рождения',
+        'Укажите номер телефона — придёт SMS-код',
+        'Введите код и придумайте пароль',
+        'Загрузите фото — нажмите «Добавить фото»',
+        'Найдите знакомых через «Поиск людей»',
+      ]},
+      { type: 'tip', text: '🔒 Никому не сообщайте пароль. Если кто-то просит его назвать — это мошенники.' },
     ],
   },
   {
-    id: 2,
-    title: 'Аналитика данных',
-    subtitle: 'Работа с метриками',
-    icon: 'BarChart2',
-    color: '#a855f7',
-    lessons: 8,
-    duration: '3ч 15м',
-    progress: 40,
-    checklist: [
-      { id: 1, text: 'Настроить аналитику', done: true },
-      { id: 2, text: 'Изучить основные метрики', done: true },
-      { id: 3, text: 'Создать дашборд', done: false },
-      { id: 4, text: 'Провести A/B тест', done: false },
-    ],
-    quiz: [
-      { question: 'Что такое конверсия?', options: ['Число посетителей', 'Доля целевых действий', 'Время на сайте', 'Показатель отказов'], correct: 1 },
-      { question: 'Какая метрика показывает удержание пользователей?', options: ['DAU', 'Retention Rate', 'CTR', 'CPC'], correct: 1 },
+    id: 'video',
+    icon: 'Video',
+    title: 'Видеозвонки: Zoom и WhatsApp',
+    badge: 'Популярное',
+    bClass: 'badge-sage',
+    content: [
+      { type: 'text', text: 'Видеозвонок — это когда вы видите и слышите собеседника на экране смартфона или планшета. Это бесплатно! Главное — подключение к интернету.' },
+      { type: 'grid', items: [
+        { icon: 'MessageSquare', label: 'WhatsApp', desc: 'Позвоните родным — нажмите на имя и значок камеры' },
+        { icon: 'Monitor',       label: 'Zoom',     desc: 'Для групповых встреч — кружков, клубов, мероприятий' },
+        { icon: 'Mic',           label: 'Микрофон', desc: 'Убедитесь, что он включён — значок не перечёркнут' },
+        { icon: 'Camera',        label: 'Камера',   desc: 'Держите планшет на уровне лица, смотрите в объектив' },
+      ]},
+      { type: 'steps', steps: [
+        'Откройте WhatsApp на смартфоне',
+        'Найдите нужный контакт в списке чатов',
+        'Нажмите значок видеокамеры (📹) вверху экрана',
+        'Дождитесь ответа — говорите громко и чётко',
+        'Для завершения нажмите красную трубку',
+      ]},
     ],
   },
   {
-    id: 3,
-    title: 'UX Дизайн',
-    subtitle: 'Проектирование интерфейсов',
-    icon: 'Palette',
-    color: '#f59e0b',
-    lessons: 10,
-    duration: '4ч',
-    progress: 10,
-    checklist: [
-      { id: 1, text: 'Изучить принципы UX', done: true },
-      { id: 2, text: 'Создать прототип', done: false },
-      { id: 3, text: 'Провести юзер-тест', done: false },
-      { id: 4, text: 'Внести правки', done: false },
-      { id: 5, text: 'Финальное ревью', done: false },
+    id: 'messages',
+    icon: 'MessageSquare',
+    title: 'Написание сообщений: от SMS до мессенджеров',
+    badge: 'Общение',
+    bClass: 'badge-terra',
+    content: [
+      { type: 'text', text: 'SMS — это обычные сообщения по телефону. Мессенджер — приложение для сообщений через интернет. В мессенджере можно бесплатно отправлять текст, голосовые сообщения, фото и даже стикеры.' },
+      { type: 'grid', items: [
+        { icon: 'MessageCircle', label: 'WhatsApp',  desc: 'Самый популярный мессенджер — для родных и друзей' },
+        { icon: 'Send',          label: 'Telegram',  desc: 'Удобен для группового общения и подписки на новости' },
+        { icon: 'Mail',          label: 'Viber',     desc: 'Похож на WhatsApp, очень прост в использовании' },
+        { icon: 'MessageSquare', label: 'ВКонтакте', desc: 'Встроенный чат — можно писать прямо на сайте' },
+      ]},
+      { type: 'tip', text: '🎤 Голосовые сообщения удобнее, чем печатать. Зажмите микрофон в WhatsApp и говорите!' },
     ],
-    quiz: [
-      { question: 'Что означает принцип "Закон Хика"?', options: ['Чем меньше выбор, тем быстрее решение', 'Пользователи читают слева направо', 'Простота важнее функциональности', 'Цвет влияет на эмоции'], correct: 0 },
+  },
+  {
+    id: 'glossary',
+    icon: 'BookOpen',
+    title: 'Словарик: чат, профиль, друзья и другие слова',
+    badge: 'Глоссарий',
+    bClass: 'badge-gold',
+    content: [
+      { type: 'glossary', terms: [
+        { word: 'Профиль',     def: 'Ваша личная страница в соцсети — там ваше фото, имя и информация о вас.' },
+        { word: 'Аватар',     def: 'Фотография на вашей странице. Другие люди видят её рядом с вашим именем.' },
+        { word: 'Чат',        def: 'Переписка в мессенджере или соцсети. Как SMS, только через интернет.' },
+        { word: 'Друзья',     def: 'Люди, которых вы добавили в соцсети. Вы видите их посты и фото.' },
+        { word: 'Лайк',       def: 'Отметка «Нравится» — нажмите сердечко под фото или записью.' },
+        { word: 'Пост',       def: 'Запись на странице — текст, фото или видео, которые вы публикуете.' },
+        { word: 'Стикер',     def: 'Смешная картинка или анимация — как открытка в сообщении.' },
+        { word: 'Группа/Клуб', def: 'Сообщество людей с общим интересом: «Садоводы», «Любители кино» и т.д.' },
+      ]},
     ],
   },
 ];
 
-interface ModuleCardProps {
-  module: Module;
-}
+function AccordionCard({ t }: { t: Topic }) {
+  const [open, setOpen] = useState(false);
 
-function ModuleCard({ module }: ModuleCardProps) {
-  const [tab, setTab] = useState<'checklist' | 'quiz'>('checklist');
-  const [items, setItems] = useState(module.checklist);
-  const [quizStep, setQuizStep] = useState(0);
-  const [selected, setSelected] = useState<number | null>(null);
-  const [quizDone, setQuizDone] = useState(false);
-  const [score, setScore] = useState(0);
-  const [expanded, setExpanded] = useState(false);
-
-  const toggleCheck = (id: number) => {
-    setItems(prev => prev.map(i => i.id === id ? { ...i, done: !i.done } : i));
-  };
-
-  const doneCount = items.filter(i => i.done).length;
-  const checkProgress = Math.round((doneCount / items.length) * 100);
-
-  const handleAnswer = (idx: number) => {
-    if (selected !== null) return;
-    setSelected(idx);
-    if (idx === module.quiz[quizStep].correct) setScore(s => s + 1);
-  };
-
-  const nextQuestion = () => {
-    if (quizStep + 1 >= module.quiz.length) {
-      setQuizDone(true);
-    } else {
-      setQuizStep(s => s + 1);
-      setSelected(null);
-    }
-  };
-
-  const resetQuiz = () => {
-    setQuizStep(0);
-    setSelected(null);
-    setQuizDone(false);
-    setScore(0);
+  const render = (b: Block, i: number) => {
+    if (b.type === 'text') return <p key={i} style={{ fontSize: 17, color: 'var(--ink-soft)', lineHeight: 1.75, marginBottom: 14 }}>{b.text}</p>;
+    if (b.type === 'tip')  return <div key={i} className="tip" style={{ marginBottom: 14 }}>{b.text}</div>;
+    if (b.type === 'steps') return (
+      <ol key={i} style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 14 }}>
+        {(b.steps ?? []).map((s, si) => (
+          <li key={si} style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+            <span className="step-dot" style={{ width: 36, height: 36, fontSize: 14, flexShrink: 0 }}>{si + 1}</span>
+            <span style={{ fontSize: 16, color: 'var(--ink)', paddingTop: 7 }}>{s}</span>
+          </li>
+        ))}
+      </ol>
+    );
+    if (b.type === 'grid') return (
+      <div key={i} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(230px, 1fr))', gap: 12, marginBottom: 14 }}>
+        {(b.items ?? []).map((it, ii) => (
+          <div key={ii} style={{ display: 'flex', gap: 12, padding: '14px', borderRadius: 14, background: 'var(--cream)', border: '1px solid var(--line)', alignItems: 'flex-start' }}>
+            <div className="icon-wrap icon-wrap-terra" style={{ width: 38, height: 38, flexShrink: 0 }}>
+              <Icon name={it.icon} fallback="Star" size={18} style={{ color: 'var(--terra)' }} />
+            </div>
+            <div>
+              <div style={{ fontWeight: 700, fontSize: 14, color: 'var(--ink)', marginBottom: 3 }}>{it.label}</div>
+              <div style={{ fontSize: 13, color: 'var(--ink-soft)', lineHeight: 1.5 }}>{it.desc}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+    if (b.type === 'glossary') return (
+      <dl key={i} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        {(b.terms ?? []).map((g, gi) => (
+          <div key={gi} style={{ display: 'flex', gap: 14, padding: '12px 14px', borderRadius: 10, background: gi % 2 === 0 ? 'var(--cream)' : 'transparent' }}>
+            <dt style={{ fontWeight: 800, fontSize: 15, color: 'var(--terra)', minWidth: 150, flexShrink: 0 }}>{g.word}</dt>
+            <dd style={{ fontSize: 15, color: 'var(--ink-soft)', lineHeight: 1.6, margin: 0 }}>{g.def}</dd>
+          </div>
+        ))}
+      </dl>
+    );
+    return null;
   };
 
   return (
-    <div className="glass-card rounded-2xl overflow-hidden">
-      {/* Header */}
-      <div
-        className="p-6 cursor-pointer"
-        onClick={() => setExpanded(e => !e)}
+    <article className="card" style={{ overflow: 'hidden' }}>
+      <button
+        onClick={() => setOpen(o => !o)}
+        style={{ width: '100%', padding: '22px 24px', display: 'flex', alignItems: 'center', gap: 16, background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+        aria-expanded={open} aria-controls={`topic-${t.id}`}
       >
-        <div className="flex items-start gap-4">
-          <div
-            className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-            style={{ background: `${module.color}20`, boxShadow: `0 0 20px ${module.color}30` }}
-          >
-            <Icon name={module.icon} fallback="BookOpen" size={22} style={{ color: module.color }} />
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <h3 className="font-oswald text-xl font-bold text-white">{module.title}</h3>
-                <p className="font-golos text-sm text-white/40 mt-0.5">{module.subtitle}</p>
-              </div>
-              <div className="flex items-center gap-3 flex-shrink-0">
-                <span className="font-oswald font-bold text-lg" style={{ color: module.color }}>{module.progress}%</span>
-                <Icon name={expanded ? 'ChevronUp' : 'ChevronDown'} size={18} className="text-white/40" />
-              </div>
-            </div>
-            <div className="flex items-center gap-4 mt-3">
-              <span className="flex items-center gap-1.5 font-golos text-xs text-white/40">
-                <Icon name="Play" size={12} className="text-white/40" />
-                {module.lessons} уроков
-              </span>
-              <span className="flex items-center gap-1.5 font-golos text-xs text-white/40">
-                <Icon name="Clock" size={12} className="text-white/40" />
-                {module.duration}
-              </span>
-              <span className="flex items-center gap-1.5 font-golos text-xs text-white/40">
-                <Icon name="CheckSquare" size={12} className="text-white/40" />
-                {doneCount}/{items.length} задач
-              </span>
-            </div>
-          </div>
+        <div className="icon-wrap icon-wrap-terra" style={{ width: 52, height: 52 }}>
+          <Icon name={t.icon} fallback="BookOpen" size={24} style={{ color: 'var(--terra)' }} />
         </div>
-
-        <div className="progress-bar mt-4">
-          <div className="progress-fill" style={{ width: `${module.progress}%` }} />
+        <div style={{ flex: 1 }}>
+          <div className={`badge ${t.bClass}`} style={{ marginBottom: 5 }}>{t.badge}</div>
+          <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 19, fontWeight: 700, color: 'var(--ink)', margin: 0 }}>{t.title}</h3>
         </div>
-      </div>
+        <div style={{ width: 36, height: 36, borderRadius: 9, background: open ? 'var(--terra-pale)' : 'var(--cream-dark)', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.2s', flexShrink: 0 }}>
+          <Icon name={open ? 'ChevronUp' : 'ChevronDown'} size={18} style={{ color: open ? 'var(--terra)' : 'var(--ink-muted)' }} />
+        </div>
+      </button>
 
-      {/* Expanded content */}
-      {expanded && (
-        <div className="border-t border-white/5 px-6 pb-6">
-          {/* Tabs */}
-          <div className="flex gap-2 mt-5 mb-5 p-1 bg-black/30 rounded-xl w-fit">
-            {(['checklist', 'quiz'] as const).map(t => (
-              <button
-                key={t}
-                onClick={() => setTab(t)}
-                className={`px-4 py-2 rounded-lg font-golos text-sm font-medium transition-all ${
-                  tab === t
-                    ? 'text-[#0a0c12] bg-[#00ffb3] shadow-lg'
-                    : 'text-white/50 hover:text-white'
-                }`}
-              >
-                {t === 'checklist' ? '✅ Чек-лист' : '🧠 Тест'}
-              </button>
-            ))}
+      {open && (
+        <div id={`topic-${t.id}`} style={{ padding: '0 24px 24px', borderTop: '1px solid var(--line)' }}>
+          <div style={{ paddingTop: 20 }}>
+            {t.content.map((b, i) => render(b, i))}
           </div>
-
-          {tab === 'checklist' && (
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <span className="font-golos text-sm text-white/40">Прогресс: {doneCount}/{items.length}</span>
-                <span className="font-oswald font-bold text-[#00ffb3]">{checkProgress}%</span>
-              </div>
-              <div className="space-y-3">
-                {items.map(item => (
-                  <div
-                    key={item.id}
-                    className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/3 cursor-pointer transition-colors group"
-                    onClick={() => toggleCheck(item.id)}
-                  >
-                    <div className={`custom-check ${item.done ? 'checked' : ''}`}>
-                      {item.done && <Icon name="Check" size={12} className="text-[#0a0c12]" />}
-                    </div>
-                    <span className={`font-golos text-sm flex-1 ${item.done ? 'line-through text-white/30' : 'text-white/80'}`}>
-                      {item.text}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {tab === 'quiz' && (
-            <div>
-              {!quizDone ? (
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="font-golos text-sm text-white/40">Вопрос {quizStep + 1} из {module.quiz.length}</span>
-                    <div className="progress-bar w-24">
-                      <div className="progress-fill" style={{ width: `${((quizStep) / module.quiz.length) * 100}%` }} />
-                    </div>
-                  </div>
-
-                  <p className="font-golos font-semibold text-white text-base mb-5 leading-relaxed">
-                    {module.quiz[quizStep].question}
-                  </p>
-
-                  <div className="space-y-3">
-                    {module.quiz[quizStep].options.map((opt, idx) => {
-                      const isCorrect = idx === module.quiz[quizStep].correct;
-                      const isSelected = idx === selected;
-                      let cls = 'border border-white/10 text-white/70';
-                      if (selected !== null) {
-                        if (isCorrect) cls = 'border border-[#00ffb3] bg-[rgba(0,255,179,0.1)] text-[#00ffb3]';
-                        else if (isSelected) cls = 'border border-red-500 bg-[rgba(239,68,68,0.1)] text-red-400';
-                      } else {
-                        cls = 'border border-white/10 text-white/70 hover:border-white/30 hover:text-white hover:bg-white/5';
-                      }
-                      return (
-                        <button
-                          key={idx}
-                          onClick={() => handleAnswer(idx)}
-                          className={`w-full text-left px-4 py-3 rounded-xl font-golos text-sm transition-all ${cls}`}
-                        >
-                          <span className="font-bold mr-3 opacity-50">{String.fromCharCode(65 + idx)}.</span>
-                          {opt}
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  {selected !== null && (
-                    <button
-                      onClick={nextQuestion}
-                      className="mt-5 w-full py-3 rounded-xl font-golos font-semibold text-[#0a0c12] bg-[#00ffb3] hover:bg-[#00e6a1] transition-colors"
-                    >
-                      {quizStep + 1 >= module.quiz.length ? 'Завершить тест' : 'Следующий вопрос →'}
-                    </button>
-                  )}
-                </div>
-              ) : (
-                <div className="text-center py-6">
-                  <div className="w-16 h-16 rounded-full bg-[rgba(0,255,179,0.15)] flex items-center justify-center mx-auto mb-4 neon-glow">
-                    <Icon name="Trophy" size={28} className="text-[#00ffb3]" />
-                  </div>
-                  <p className="font-oswald text-4xl font-bold text-[#00ffb3] mb-1">{score}/{module.quiz.length}</p>
-                  <p className="font-golos text-white/50 mb-6">правильных ответов</p>
-                  <button onClick={resetQuiz} className="px-6 py-2.5 rounded-xl font-golos text-sm font-medium border border-white/15 text-white hover:border-white/30 hover:bg-white/5 transition-all">
-                    Пройти снова
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
         </div>
       )}
-    </div>
+    </article>
   );
 }
 
-export default function ModulesSection() {
+export default function OnlineCommunicationSection() {
   return (
-    <section className="relative px-6 py-20 min-h-screen">
-      <div className="orb orb-purple" style={{ top: '10%', right: '-10%', opacity: 0.6 }} />
-
-      <div className="max-w-4xl mx-auto relative z-10">
-        <div className="mb-12">
-          <div className="inline-flex items-center gap-2 mb-4 px-3 py-1.5 rounded-full border border-[rgba(168,85,247,0.3)] bg-[rgba(168,85,247,0.05)]">
-            <Icon name="Layers" size={14} className="text-[#a855f7]" />
-            <span className="font-golos text-sm text-[#a855f7]">Программа обучения</span>
-          </div>
-          <h2 className="font-oswald text-5xl lg:text-6xl font-bold text-white mb-4">
-            МОДУЛИ
+    <section id="online" aria-labelledby="online-title" style={{ background: 'var(--cream)', padding: '72px 0' }} className="sec-pad">
+      <div style={{ maxWidth: 860, margin: '0 auto', padding: '0 24px' }}>
+        <div style={{ marginBottom: 44 }}>
+          <div className="divider" style={{ marginBottom: 18 }} />
+          <p className="sec-label" style={{ marginBottom: 10 }}>Раздел 1</p>
+          <h2 id="online-title" style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(26px, 4vw, 40px)', fontWeight: 800, color: 'var(--ink)', marginBottom: 14 }}>
+            Основы общения онлайн
           </h2>
-          <p className="font-golos text-white/50 text-lg">
-            Кликни на модуль, чтобы открыть чек-лист и пройти тест
+          <p style={{ fontSize: 18, color: 'var(--ink-soft)', lineHeight: 1.65 }}>
+            Научитесь общаться в интернете — находите друзей, пишите родным, участвуйте в клубах
           </p>
         </div>
-
-        <div className="space-y-4">
-          {modulesData.map(m => (
-            <ModuleCard key={m.id} module={m} />
-          ))}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          {TOPICS.map(t => <AccordionCard key={t.id} t={t} />)}
         </div>
       </div>
     </section>

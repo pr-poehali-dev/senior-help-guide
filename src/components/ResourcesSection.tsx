@@ -1,242 +1,204 @@
 import { useState } from 'react';
 import Icon from '@/components/ui/icon';
 
-interface Resource {
-  id: number;
-  title: string;
-  description: string;
-  type: 'pdf' | 'video' | 'article' | 'template';
-  tag: string;
-  size?: string;
-  duration?: string;
-  icon: string;
-  color: string;
-  pages?: number;
+/* ──────────────────────────────────────
+   Раздел «Практические инструкции»
+────────────────────────────────────── */
+
+interface Step { title: string; desc: string; tip?: string; }
+interface CheckItem { id: number; text: string; done: boolean; }
+interface Guide {
+  id: string; icon: string; title: string;
+  difficulty: string; diffColor: string;
+  time: string; intro: string;
+  steps: Step[]; checklist: CheckItem[];
 }
 
-const resources: Resource[] = [
+const GUIDES: Guide[] = [
   {
-    id: 1,
-    title: 'Гайд по продуктовому мышлению',
-    description: 'Полное руководство с примерами и кейсами реальных продуктов',
-    type: 'pdf',
-    tag: 'Основы',
-    icon: 'FileText',
-    color: '#00ffb3',
-    size: '4.2 МБ',
-    pages: 48,
+    id: 'gosuslugi', icon: 'FileText',
+    title: 'Регистрация на Госуслугах',
+    difficulty: 'Легко', diffColor: 'var(--sage)',
+    time: '15 мин',
+    intro: 'Госуслуги — официальный портал государственных услуг. Запись к врачу, пенсия, справки — всё не выходя из дома.',
+    steps: [
+      { title: 'Откройте gosuslugi.ru', desc: 'Введите адрес в браузере или найдите приложение «Госуслуги» в магазине.' },
+      { title: 'Нажмите «Зарегистрироваться»', desc: 'Кнопка в правом верхнем углу страницы.' },
+      { title: 'Введите телефон', desc: 'На него придёт SMS с кодом подтверждения.', tip: 'Код действует 5 минут — вводите сразу.' },
+      { title: 'Придумайте пароль', desc: 'Минимум 8 символов, буквы и цифры. Запишите в блокнот!' },
+      { title: 'Заполните данные', desc: 'Фамилия, имя, отчество, дата рождения, email.' },
+      { title: 'Подтвердите личность', desc: 'Через МФЦ лично или онлайн через банк (Сбербанк, ВТБ).' },
+    ],
+    checklist: [
+      { id: 1, text: 'Подготовил номер телефона', done: false },
+      { id: 2, text: 'Открыл gosuslugi.ru', done: false },
+      { id: 3, text: 'Прошёл регистрацию', done: false },
+      { id: 4, text: 'Записал пароль в блокнот', done: false },
+      { id: 5, text: 'Подтвердил личность', done: false },
+    ],
   },
   {
-    id: 2,
-    title: 'Мастер-класс по аналитике',
-    description: 'Видео-урок о работе с данными и построении гипотез',
-    type: 'video',
-    tag: 'Аналитика',
-    icon: 'Play',
-    color: '#a855f7',
-    duration: '42 мин',
+    id: 'food', icon: 'ShoppingCart',
+    title: 'Заказ продуктов онлайн',
+    difficulty: 'Легко', diffColor: 'var(--sage)',
+    time: '10 мин',
+    intro: 'Заказать продукты можно через приложение — доставят прямо домой. Удобно, если нет возможности выйти.',
+    steps: [
+      { title: 'Установите приложение', desc: 'Попросите близких помочь установить «Сбермаркет», «Самокат» или «Яндекс Лавка».' },
+      { title: 'Укажите адрес доставки', desc: 'Введите улицу, дом и квартиру. Приложение запомнит на будущее.', tip: 'Проверьте зону доставки — в большинстве городов работает.' },
+      { title: 'Добавьте товары в корзину', desc: 'Найдите нужные продукты через поиск или категории, нажмите «+».' },
+      { title: 'Перейдите к оплате', desc: 'Нажмите «Корзина», проверьте список и стоимость.' },
+      { title: 'Выберите оплату и время', desc: 'Можно оплатить картой или наличными при получении.' },
+    ],
+    checklist: [
+      { id: 1, text: 'Установил приложение для доставки', done: false },
+      { id: 2, text: 'Указал адрес доставки', done: false },
+      { id: 3, text: 'Выбрал и добавил товары', done: false },
+      { id: 4, text: 'Оформил и оплатил заказ', done: false },
+    ],
   },
   {
-    id: 3,
-    title: 'Шаблон продуктовой стратегии',
-    description: 'Готовый шаблон для составления дорожной карты продукта',
-    type: 'template',
-    tag: 'Инструменты',
-    icon: 'LayoutTemplate',
-    color: '#f59e0b',
-    size: '1.8 МБ',
+    id: 'clubs', icon: 'Users',
+    title: 'Поиск кружков и клубов по интересам',
+    difficulty: 'Средне', diffColor: 'var(--gold)',
+    time: '20 мин',
+    intro: 'В интернете можно найти клубы садоводов, любителей кино, путешественников. Живое и онлайн-общение!',
+    steps: [
+      { title: 'Определитесь с интересом', desc: 'Что вам нравится? Вязание, история, кулинария, шахматы, пение?' },
+      { title: 'Откройте ВКонтакте или Одноклассники', desc: 'Эти соцсети есть в России и там много активных сообществ.' },
+      { title: 'Введите запрос в поиск', desc: 'Например: «Клуб садоводов Москва» или «Любители классической музыки».', tip: 'Нажмите «Группы» — это сообщества людей с похожими интересами.' },
+      { title: 'Вступите в группу', desc: 'Нажмите «Подписаться» или «Вступить». Теперь вы часть клуба!' },
+      { title: 'Напишите первое сообщение', desc: 'Представьтесь: «Здравствуйте! Меня зовут [имя], рада/рад знакомству».' },
+    ],
+    checklist: [
+      { id: 1, text: 'Выбрал интерес для поиска клуба', done: false },
+      { id: 2, text: 'Открыл соцсеть и нашёл группы', done: false },
+      { id: 3, text: 'Вступил в одну группу', done: false },
+      { id: 4, text: 'Написал первое сообщение', done: false },
+    ],
   },
   {
-    id: 4,
-    title: 'Принципы UX дизайна 2024',
-    description: 'Актуальные тенденции и best practices в проектировании интерфейсов',
-    type: 'article',
-    tag: 'UX/UI',
-    icon: 'Palette',
-    color: '#3b82f6',
-    duration: '15 мин чтения',
-  },
-  {
-    id: 5,
-    title: 'Чек-лист запуска продукта',
-    description: '87 пунктов для успешного выхода на рынок',
-    type: 'pdf',
-    tag: 'Чек-листы',
-    icon: 'CheckSquare',
-    color: '#00ffb3',
-    size: '0.9 МБ',
-    pages: 12,
-  },
-  {
-    id: 6,
-    title: 'Метрики SaaS-продуктов',
-    description: 'Какие KPI отслеживать и как их интерпретировать',
-    type: 'article',
-    tag: 'Аналитика',
-    icon: 'TrendingUp',
-    color: '#a855f7',
-    duration: '10 мин чтения',
+    id: 'dating', icon: 'Heart',
+    title: 'Приложения для общения пожилых',
+    difficulty: 'Средне', diffColor: 'var(--gold)',
+    time: '15 мин',
+    intro: 'Специальные приложения помогают найти друзей по переписке, компанию для прогулок или нового близкого человека.',
+    steps: [
+      { title: 'Выберите безопасное приложение', desc: 'Для пожилых: «Одноклассники» (раздел «Знакомства»), «Баду», «Мамба». Всегда используйте официальные версии.' },
+      { title: 'Заполните профиль честно', desc: 'Настоящее имя, возраст, фото. Расскажите о своих интересах.' },
+      { title: 'Начните переписку', desc: 'Напишите что-то доброе: «Здравствуйте! Вижу, вы любите природу — я тоже».', tip: '⚠️ Никогда не отправляйте деньги людям, с которыми познакомились онлайн.' },
+      { title: 'Назначайте встречи в публичных местах', desc: 'Кафе, парк — если решили познакомиться лично, сообщите родным.' },
+    ],
+    checklist: [
+      { id: 1, text: 'Выбрал безопасное приложение', done: false },
+      { id: 2, text: 'Заполнил профиль', done: false },
+      { id: 3, text: 'Начал общение с кем-то', done: false },
+    ],
   },
 ];
 
-const filters = ['Все', 'Основы', 'Аналитика', 'UX/UI', 'Инструменты', 'Чек-листы'];
-
-const typeLabels: Record<string, string> = {
-  pdf: 'PDF',
-  video: 'Видео',
-  article: 'Статья',
-  template: 'Шаблон',
-};
-
-export default function ResourcesSection() {
-  const [activeFilter, setActiveFilter] = useState('Все');
-  const [downloadedIds, setDownloadedIds] = useState<number[]>([]);
-
-  const filtered = activeFilter === 'Все'
-    ? resources
-    : resources.filter(r => r.tag === activeFilter);
-
-  const handleDownload = (id: number) => {
-    setDownloadedIds(prev => [...prev, id]);
-    setTimeout(() => {
-      setDownloadedIds(prev => prev.filter(i => i !== id));
-    }, 2000);
-  };
-
-  const handleExportAll = () => {
-    alert('Экспорт PDF-отчёта с прогрессом будет готов через несколько секунд');
-  };
+function GuideCard({ g }: { g: Guide }) {
+  const [open, setOpen] = useState(false);
+  const [items, setItems] = useState(g.checklist);
+  const done = items.filter(i => i.done).length;
+  const pct = Math.round((done / items.length) * 100);
+  const toggle = (id: number) => setItems(p => p.map(i => i.id === id ? { ...i, done: !i.done } : i));
 
   return (
-    <section className="relative px-6 py-20 min-h-screen">
-      <div className="orb orb-green" style={{ bottom: '10%', left: '-5%', opacity: 0.5 }} />
-
-      <div className="max-w-5xl mx-auto relative z-10">
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-12">
-          <div>
-            <div className="inline-flex items-center gap-2 mb-4 px-3 py-1.5 rounded-full border border-[rgba(0,255,179,0.3)] bg-[rgba(0,255,179,0.05)]">
-              <Icon name="Library" size={14} className="text-[#00ffb3]" />
-              <span className="font-golos text-sm text-[#00ffb3]">База знаний</span>
-            </div>
-            <h2 className="font-oswald text-5xl lg:text-6xl font-bold text-white mb-4">РЕСУРСЫ</h2>
-            <p className="font-golos text-white/50 text-lg">Материалы для углублённого изучения</p>
+    <article className="card" style={{ overflow: 'hidden' }}>
+      <button
+        onClick={() => setOpen(o => !o)}
+        style={{ width: '100%', padding: '22px 24px', display: 'flex', alignItems: 'center', gap: 16, background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+        aria-expanded={open}
+      >
+        <div className="icon-wrap icon-wrap-terra" style={{ width: 52, height: 52, flexShrink: 0 }}>
+          <Icon name={g.icon} fallback="File" size={24} style={{ color: 'var(--terra)' }} />
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 4, alignItems: 'center' }}>
+            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, fontWeight: 700, color: 'var(--ink)', margin: 0 }}>{g.title}</h3>
+            <span style={{ fontSize: 11, fontWeight: 800, padding: '2px 10px', borderRadius: 100, background: g.diffColor + '18', color: g.diffColor }}>{g.difficulty}</span>
           </div>
-
-          <button
-            onClick={handleExportAll}
-            className="group flex items-center gap-2.5 px-6 py-3.5 rounded-xl font-golos font-semibold text-[#0a0c12] bg-[#00ffb3] hover:bg-[#00e6a1] transition-all neon-glow hover:scale-105 self-start lg:self-auto"
-          >
-            <Icon name="Download" size={18} className="text-[#0a0c12]" />
-            Скачать PDF-отчёт
-          </button>
+          <div style={{ display: 'flex', gap: 14, fontSize: 13, color: 'var(--ink-muted)', marginBottom: 10 }}>
+            <span>⏱ {g.time}</span>
+            <span>✅ {done}/{items.length} шагов</span>
+          </div>
+          <div className="prog-track">
+            <div className="prog-fill" style={{ width: `${pct}%` }} />
+          </div>
         </div>
+        <Icon name={open ? 'ChevronUp' : 'ChevronDown'} size={20} style={{ color: 'var(--ink-muted)', flexShrink: 0 }} />
+      </button>
 
-        {/* Filters */}
-        <div className="flex flex-wrap gap-2 mb-8">
-          {filters.map(f => (
-            <button
-              key={f}
-              onClick={() => setActiveFilter(f)}
-              className={`px-4 py-2 rounded-lg font-golos text-sm font-medium transition-all ${
-                activeFilter === f
-                  ? 'bg-[#00ffb3] text-[#0a0c12] neon-glow'
-                  : 'border border-white/10 text-white/50 hover:border-white/25 hover:text-white'
-              }`}
-            >
-              {f}
-            </button>
-          ))}
-        </div>
+      {open && (
+        <div style={{ borderTop: '1px solid var(--line)', padding: '24px' }}>
+          <p style={{ fontSize: 16, color: 'var(--ink-soft)', marginBottom: 24 }}>{g.intro}</p>
 
-        {/* Resources grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {filtered.map((res) => {
-            const downloaded = downloadedIds.includes(res.id);
-            return (
-              <div key={res.id} className="glass-card rounded-2xl p-5 group">
-                <div className="flex gap-4">
-                  {/* Icon */}
-                  <div
-                    className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110"
-                    style={{ background: `${res.color}15`, boxShadow: `0 0 20px ${res.color}25` }}
-                  >
-                    <Icon name={res.icon} fallback="File" size={22} style={{ color: res.color }} />
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start gap-2 mb-1">
-                      <h3 className="font-golos font-semibold text-white text-sm leading-snug flex-1">{res.title}</h3>
-                      <span
-                        className="flex-shrink-0 text-xs font-golos font-medium px-2 py-0.5 rounded-md"
-                        style={{ background: `${res.color}20`, color: res.color }}
-                      >
-                        {typeLabels[res.type]}
-                      </span>
+          <div className="grid2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
+            {/* Steps */}
+            <div>
+              <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: 17, fontWeight: 700, marginBottom: 16, color: 'var(--ink)' }}>Пошаговая инструкция</h4>
+              <ol style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: 14 }}>
+                {g.steps.map((s, i) => (
+                  <li key={i} style={{ display: 'flex', gap: 12 }}>
+                    <span className="step-dot" style={{ width: 34, height: 34, fontSize: 13, flexShrink: 0 }}>{i + 1}</span>
+                    <div>
+                      <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--ink)', marginBottom: 3 }}>{s.title}</div>
+                      <div style={{ fontSize: 14, color: 'var(--ink-soft)', lineHeight: 1.55 }}>{s.desc}</div>
+                      {s.tip && <div className="tip" style={{ marginTop: 8, fontSize: 13 }}>{s.tip}</div>}
                     </div>
+                  </li>
+                ))}
+              </ol>
+            </div>
 
-                    <p className="font-golos text-xs text-white/40 leading-relaxed mb-3">{res.description}</p>
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3 text-xs text-white/30 font-golos">
-                        {res.size && (
-                          <span className="flex items-center gap-1">
-                            <Icon name="HardDrive" size={11} className="text-white/30" />
-                            {res.size}
-                          </span>
-                        )}
-                        {res.duration && (
-                          <span className="flex items-center gap-1">
-                            <Icon name="Clock" size={11} className="text-white/30" />
-                            {res.duration}
-                          </span>
-                        )}
-                        {res.pages && (
-                          <span className="flex items-center gap-1">
-                            <Icon name="FileText" size={11} className="text-white/30" />
-                            {res.pages} стр.
-                          </span>
-                        )}
-                      </div>
-
-                      <button
-                        onClick={() => handleDownload(res.id)}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-golos text-xs font-medium transition-all ${
-                          downloaded
-                            ? 'bg-[rgba(0,255,179,0.2)] text-[#00ffb3]'
-                            : 'bg-white/5 text-white/50 hover:bg-white/10 hover:text-white'
-                        }`}
-                      >
-                        <Icon name={downloaded ? 'Check' : 'Download'} size={12} />
-                        {downloaded ? 'Скачано' : 'Скачать'}
-                      </button>
-                    </div>
-                  </div>
-                </div>
+            {/* Checklist */}
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: 17, fontWeight: 700, color: 'var(--ink)', margin: 0 }}>Чек-лист</h4>
+                <span style={{ fontSize: 15, fontWeight: 800, color: pct === 100 ? 'var(--sage)' : 'var(--terra)' }}>{pct}%</span>
               </div>
-            );
-          })}
-        </div>
-
-        {/* PDF export block */}
-        <div className="mt-10 glass-card rounded-2xl p-8 neon-glow relative overflow-hidden">
-          <div className="absolute inset-0 animate-shimmer pointer-events-none" />
-          <div className="relative z-10 flex flex-col lg:flex-row items-center gap-6">
-            <div className="w-16 h-16 rounded-2xl bg-[rgba(0,255,179,0.15)] flex items-center justify-center neon-glow flex-shrink-0">
-              <Icon name="FileDown" size={30} className="text-[#00ffb3]" />
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                {items.map(it => (
+                  <div
+                    key={it.id} className="check-row"
+                    onClick={() => toggle(it.id)}
+                    role="checkbox" aria-checked={it.done} tabIndex={0}
+                    onKeyDown={e => e.key === 'Enter' && toggle(it.id)}
+                  >
+                    <div className={`check-box ${it.done ? 'on' : ''}`}>
+                      {it.done && <Icon name="Check" size={14} style={{ color: '#fff' }} />}
+                    </div>
+                    <span style={{ fontSize: 15, color: it.done ? 'var(--ink-muted)' : 'var(--ink)', textDecoration: it.done ? 'line-through' : 'none' }}>{it.text}</span>
+                  </div>
+                ))}
+              </div>
+              {pct === 100 && (
+                <div style={{ marginTop: 14, padding: '14px', borderRadius: 12, background: 'var(--sage-pale)', border: '1px solid rgba(74,124,89,0.2)', display: 'flex', gap: 10, alignItems: 'center' }}>
+                  <Icon name="Award" size={22} style={{ color: 'var(--sage)' }} />
+                  <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--sage)' }}>Отлично! Всё выполнено!</span>
+                </div>
+              )}
             </div>
-            <div className="flex-1 text-center lg:text-left">
-              <h3 className="font-oswald text-2xl font-bold text-white mb-2">Генерация PDF-отчёта</h3>
-              <p className="font-golos text-white/50 text-sm">
-                Экспортируй весь прогресс обучения — заполненные чек-листы, результаты тестов и пройденные модули — в один красивый PDF-документ.
-              </p>
-            </div>
-            <button
-              onClick={handleExportAll}
-              className="flex-shrink-0 px-8 py-4 rounded-xl font-golos font-bold text-[#0a0c12] bg-[#00ffb3] hover:bg-[#00e6a1] transition-all hover:scale-105 neon-glow"
-            >
-              Создать PDF
-            </button>
           </div>
+        </div>
+      )}
+    </article>
+  );
+}
+
+export default function InstructionsSection() {
+  return (
+    <section id="instructions" aria-labelledby="instr-title" style={{ background: 'var(--cream-dark)', padding: '72px 0' }} className="sec-pad">
+      <div style={{ maxWidth: 1000, margin: '0 auto', padding: '0 24px' }}>
+        <div style={{ marginBottom: 44 }}>
+          <div className="divider" style={{ marginBottom: 18 }} />
+          <p className="sec-label" style={{ marginBottom: 10 }}>Раздел 2</p>
+          <h2 id="instr-title" style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(26px, 4vw, 40px)', fontWeight: 800, marginBottom: 14 }}>Практические инструкции</h2>
+          <p style={{ fontSize: 18, color: 'var(--ink-soft)' }}>Пошаговые руководства с чек-листами — нажмите и выполняйте</p>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          {GUIDES.map(g => <GuideCard key={g.id} g={g} />)}
         </div>
       </div>
     </section>

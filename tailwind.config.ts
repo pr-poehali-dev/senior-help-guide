@@ -19,8 +19,8 @@ export default {
 			}
 		},
 		fontFamily: {
-				rubik: ['Rubik', 'sans-serif'],
-				merriweather: ['Merriweather', 'serif'],
+				nunito: ['Nunito', 'sans-serif'],
+				playfair: ['"Playfair Display"', 'serif'],
 			},
 		extend: {
 			colors: {
