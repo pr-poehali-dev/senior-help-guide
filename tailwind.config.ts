@@ -19,8 +19,8 @@ export default {
 			}
 		},
 		fontFamily: {
-				oswald: ['Oswald', 'sans-serif'],
-				golos: ['Golos Text', 'sans-serif'],
+				rubik: ['Rubik', 'sans-serif'],
+				merriweather: ['Merriweather', 'serif'],
 			},
 		extend: {
 			colors: {
